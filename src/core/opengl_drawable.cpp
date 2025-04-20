@@ -31,3 +31,9 @@ void Drawable::Draw(){
     glDrawArrays(GL_TRIANGLES, 0, vertexes.size() / 6);
     glBindVertexArray(0);
 }
+
+void Drawable::Free(){
+    glDeleteBuffers(1, &VBO1);
+    glDeleteBuffers(1, &VBO2);
+    glDeleteVertexArrays(1, &VAO);
+}

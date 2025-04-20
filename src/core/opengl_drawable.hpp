@@ -27,6 +27,7 @@ public:
     void SetTransform(glm::mat4 transform) {this->transform = transform;};
     void Init();
     void Draw();
+    void Free();
 };
 
 #endif

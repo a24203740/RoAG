@@ -4,6 +4,8 @@
 
 int main() {
     PlaneFramework::Init();
-    PlaneFramework::Update(std::make_shared<ArchGen>());
+    auto archGen = std::make_shared<ArchGen>();
+    PlaneFramework::Update(archGen);
+    archGen->Teardown();
     PlaneFramework::Teardown();
 }

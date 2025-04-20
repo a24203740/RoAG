@@ -159,3 +159,9 @@ void ArchGen::Update(std::shared_ptr<Window> window){
         camera->SetYaw(yaw);
     }
 }
+
+void ArchGen::Teardown(){
+    for (auto& drawable : drawables) {
+        drawable.second->Free();
+    }
+}

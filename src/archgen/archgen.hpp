@@ -8,4 +8,5 @@ private:
 public:
     ArchGen();
     virtual void Update(std::shared_ptr<Window> window);
+    virtual void Teardown();
 };
