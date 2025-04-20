@@ -7,26 +7,21 @@
 
 #define MOVE_UNIT 0.4
 
-void ArchGen::Update(std::shared_ptr<Window> window){
+ArchGen::ArchGen() : IPlaneDrawable() {
     std::shared_ptr<Ground> ground = std::make_shared<Ground>();
     ground->Init();
-    ground->Draw();
 
     std::shared_ptr<Pillar> pillar1 = std::make_shared<Pillar>(glm::vec3(5, 0, 5));
     pillar1->Init();
-    pillar1->Draw();
 
     std::shared_ptr<Pillar> pillar2 = std::make_shared<Pillar>(glm::vec3(5, 0, 20));
     pillar2->Init();
-    pillar2->Draw();
 
     std::shared_ptr<Pillar> pillar3 = std::make_shared<Pillar>(glm::vec3(20, 0, 20));
     pillar3->Init();
-    pillar3->Draw();
 
     std::shared_ptr<Pillar> pillar4 = std::make_shared<Pillar>(glm::vec3(20, 0, 5));
     pillar4->Init();
-    pillar4->Draw();
 
     std::shared_ptr<RoomGround> roomGround1 = std::make_shared<RoomGround>(
         glm::vec3(5, 0.005, 5), 
@@ -64,19 +59,33 @@ void ArchGen::Update(std::shared_ptr<Window> window){
     );
 
     roomGround1->Init();
-    roomGround1->Draw();
 
     roomGround2->Init();
-    roomGround2->Draw();
 
     roomGround3->Init();
-    roomGround3->Draw();
 
     roomGround4->Init();
-    roomGround4->Draw();
 
     roomGround5->Init();
-    roomGround5->Draw();
+   
+    drawables.emplace("ground", ground);
+    drawables.emplace("pillar1", pillar1);
+    drawables.emplace("pillar2", pillar2);
+    drawables.emplace("pillar3", pillar3);
+    drawables.emplace("pillar4", pillar4);
+    drawables.emplace("roomGround1", roomGround1);
+    drawables.emplace("roomGround2", roomGround2);
+    drawables.emplace("roomGround3", roomGround3);
+    drawables.emplace("roomGround4", roomGround4);
+    drawables.emplace("roomGround5", roomGround5);
+
+}
+
+void ArchGen::Update(std::shared_ptr<Window> window){
+
+    for (auto& drawable : drawables) {
+        drawable.second->Draw();
+    }
 
     if(window->IsKeyPress(KEY_W)){
         std::shared_ptr<Camera> camera = window->GetCamera();
