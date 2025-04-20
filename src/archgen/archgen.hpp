@@ -4,7 +4,7 @@
 
 class ArchGen : public IPlaneDrawable {
 private:
-  std::unordered_map<std::string, std::shared_ptr<Drawable>> drawables;
+    std::unordered_map<std::string, std::shared_ptr<Drawable>> drawables;
 public:
     ArchGen();
     virtual void Update(std::shared_ptr<Window> window);

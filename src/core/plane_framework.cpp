@@ -1,6 +1,3 @@
-#include <cstdlib>
-#include <memory>
-
 #include <spdlog/spdlog.h>
 
 #include "plane_framework.hpp"
@@ -8,12 +5,26 @@
 #include "opengl_shader.hpp"
 #include "plane_drawable.hpp"
 
-std::shared_ptr<Shader> PlaneFramework::shader = std::make_shared<Shader>();
-std::shared_ptr<Camera> PlaneFramework::camera = std::make_shared<Camera>();
-std::shared_ptr<Window> PlaneFramework::window = std::make_shared<Window>(camera);
+std::shared_ptr<PlaneFramework> PlaneFramework::instance = nullptr;
+std::shared_ptr<PlaneFramework> PlaneFramework::GetInstance() {
+    if (instance == nullptr) {
+      instance = std::shared_ptr<PlaneFramework>(new PlaneFramework());
+    }
+    return instance;
+}
+PlaneFramework::PlaneFramework() {
+    spdlog::info("PlaneFramework: Constructor");
+    shader = nullptr;
+    camera = nullptr;
+    window = nullptr;
+}
+
 
 void PlaneFramework::Init(){
     spdlog::info("PlaneFramework: Init Phase");
+    shader = std::make_shared<Shader>();
+    camera = std::make_shared<Camera>();
+    window = std::make_shared<Window>(camera);
     window->Init();
     GLLoader::Init();
     shader->Init();

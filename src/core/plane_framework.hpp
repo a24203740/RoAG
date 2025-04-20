@@ -9,14 +9,21 @@
 
 class PlaneFramework {
 private:
-    static std::shared_ptr<Window> window;
-    static std::shared_ptr<Shader> shader;
-    static std::shared_ptr<Camera> camera;
-public:
-    static void Init();
-    static void Update(std::shared_ptr<IPlaneDrawable> drawable);
-    static std::shared_ptr<Shader> GetShaderPtr() { return shader; }
-    static void Teardown();
+    std::shared_ptr<Window> window;
+    std::shared_ptr<Shader> shader;
+    std::shared_ptr<Camera> camera;
+
+    // singleton
+    PlaneFramework();
+    PlaneFramework(const PlaneFramework&) = delete;
+    PlaneFramework& operator=(const PlaneFramework&) = delete;
+    static std::shared_ptr<PlaneFramework> instance;
+public: 
+    static std::shared_ptr<PlaneFramework> GetInstance(); 
+    void Init();
+    void Update(std::shared_ptr<IPlaneDrawable> drawable);
+    std::shared_ptr<Shader> GetShaderPtr() { return shader; }
+    void Teardown();
 };
 
 #endif
