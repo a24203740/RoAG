@@ -2,3 +2,11 @@ build
 extra
 
 .cache
+
+CMake*
+!CMakeLists.txt
+CMakeFiles/
+Makefile
+_deps/
+cmake_install.cmake
+compile_commands.json
