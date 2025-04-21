@@ -3,7 +3,10 @@
 #include <memory>
 
 int main() {
-    PlaneFramework::Init();
-    PlaneFramework::Update(std::make_shared<ArchGen>());
-    PlaneFramework::Teardown();
+    auto planeFramework = PlaneFramework::GetInstance();
+    planeFramework->Init();
+    auto archGen = std::make_shared<ArchGen>();
+    planeFramework->Update(archGen);
+    archGen->Teardown();
+    planeFramework->Teardown();
 }

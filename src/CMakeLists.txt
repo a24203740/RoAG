@@ -6,6 +6,7 @@ add_executable(ArchGen
     ./core/opengl_glloader.cpp
     ./core/opengl_drawable.cpp
     
+    ./archgen/cube.cpp
     ./archgen/archgen.cpp
 )
 

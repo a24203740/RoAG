@@ -33,8 +33,10 @@ class Ground : public Drawable {
 public:
     Ground() : Drawable() { 
         std::vector<float> vertices;
+        std::vector<unsigned int> indicesBuffer;
         int gridSize = 100;
         float tileSize = 1;
+        indicesBuffer.reserve(gridSize * gridSize);
 
         for (int x = 0; x < gridSize; x++) {
             for (int z = 0; z < gridSize; z++) {
@@ -48,21 +50,26 @@ public:
                 float x1 = (x + 1) * tileSize;
                 float z1 = (z + 1) * tileSize;
 
-                // 定義兩個三角形來繪製這個格子
+                // 定義四個點
                 float quad[] = {
                     x0, 0.0f, z0, color.x, color.y, color.x,  // 左下
                     x1, 0.0f, z0, color.x, color.y, color.z,  // 右下
-                    x1, 0.0f, z1, color.x, color.y, color.z,  // 右上
-                    x0, 0.0f, z0, color.x, color.y, color.z,  // 左下
-                    x1, 0.0f, z1, color.x, color.y, color.z,  // 右上
-                    x0, 0.0f, z1, color.x, color.y, color.z   // 左上
+                    x0, 0.0f, z1, color.x, color.y, color.z,  // 左上
+                    x1, 0.0f, z1, color.x, color.y, color.z  // 右上
                 };
+                
 
                 // 加入 vector
                 vertices.insert(vertices.end(), std::begin(quad), std::end(quad));
+                int indexOffset = (x * gridSize + z) * 4;
+                indicesBuffer.push_back(indexOffset); indicesBuffer.push_back(indexOffset + 1); indicesBuffer.push_back(indexOffset + 2);
+                indicesBuffer.push_back(indexOffset + 1); indicesBuffer.push_back(indexOffset + 2); indicesBuffer.push_back(indexOffset + 3);
+                
             }
         }
 
-        SetVertexes(vertices);
+        this->SetVertexes(vertices);
+        this->SetIndices(indicesBuffer);
+        this->SetAttributesLength({3, 3});
     }
 };
