@@ -3,6 +3,7 @@
 #include "ground.hpp"
 #include "pillar.hpp"
 #include "room_ground.hpp"
+#include "cube.hpp"
 #include <memory>
 
 #define MOVE_UNIT 0.4
@@ -67,6 +68,12 @@ ArchGen::ArchGen() : IPlaneDrawable() {
     roomGround4->InitVAO();
 
     roomGround5->InitVAO();
+
+    std::shared_ptr<Cube> cube1 = std::make_shared<Cube>(glm::vec3(5, 0, 5), glm::vec3(1, 1, 1));
+    std::shared_ptr<Cube> cube2 = std::make_shared<Cube>(glm::vec3(10, 3, 10), glm::vec3(2, 5, 4));
+
+    cube1->InitVAO();
+    cube2->InitVAO();
    
     drawables.emplace("ground", ground);
     drawables.emplace("pillar1", pillar1);
@@ -78,6 +85,9 @@ ArchGen::ArchGen() : IPlaneDrawable() {
     drawables.emplace("roomGround3", roomGround3);
     drawables.emplace("roomGround4", roomGround4);
     drawables.emplace("roomGround5", roomGround5);
+    drawables.emplace("cube1", cube1);
+    drawables.emplace("cube2", cube2);
+  
 
 }
 
