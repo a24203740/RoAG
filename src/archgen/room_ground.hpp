@@ -9,15 +9,14 @@ public:
     RoomGround(glm::vec3 pA, glm::vec3 pB, glm::vec3 pC, glm::vec3 pD) : pA(pA), pB(pB), pC(pC), pD(pD) {
         std::vector<float> points = GeneratePoints();
         SetVertexes(points);   
+        this->SetAttributesLength({3, 3});
+        this->SetIndices({0, 1, 2, 1, 2, 3});
     }
 
     std::vector<float> GeneratePoints(){
         std::vector<glm::vec3> points;
 
         points.push_back(pA); // A
-        points.push_back(pB); // B
-        points.push_back(pC); // C
-
         points.push_back(pB); // B
         points.push_back(pC); // C
         points.push_back(pD); // D

@@ -9,19 +9,19 @@
 
 ArchGen::ArchGen() : IPlaneDrawable() {
     std::shared_ptr<Ground> ground = std::make_shared<Ground>();
-    ground->Init();
+    ground->InitVAO();
 
     std::shared_ptr<Pillar> pillar1 = std::make_shared<Pillar>(glm::vec3(5, 0, 5));
-    pillar1->Init();
+    pillar1->InitVAO();
 
     std::shared_ptr<Pillar> pillar2 = std::make_shared<Pillar>(glm::vec3(5, 0, 20));
-    pillar2->Init();
+    pillar2->InitVAO();
 
     std::shared_ptr<Pillar> pillar3 = std::make_shared<Pillar>(glm::vec3(20, 0, 20));
-    pillar3->Init();
+    pillar3->InitVAO();
 
     std::shared_ptr<Pillar> pillar4 = std::make_shared<Pillar>(glm::vec3(20, 0, 5));
-    pillar4->Init();
+    pillar4->InitVAO();
 
     std::shared_ptr<RoomGround> roomGround1 = std::make_shared<RoomGround>(
         glm::vec3(5, 0.005, 5), 
@@ -58,15 +58,15 @@ ArchGen::ArchGen() : IPlaneDrawable() {
         glm::vec3(20.5, 40.001, 20.5)
     );
 
-    roomGround1->Init();
+    roomGround1->InitVAO();
 
-    roomGround2->Init();
+    roomGround2->InitVAO();
 
-    roomGround3->Init();
+    roomGround3->InitVAO();
 
-    roomGround4->Init();
+    roomGround4->InitVAO();
 
-    roomGround5->Init();
+    roomGround5->InitVAO();
    
     drawables.emplace("ground", ground);
     drawables.emplace("pillar1", pillar1);

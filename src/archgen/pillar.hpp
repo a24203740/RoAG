@@ -16,6 +16,20 @@ public:
 
         std::vector<float> points = GeneratePoints();
         SetVertexes(points);
+        this->SetAttributesLength({3, 3});
+        this->SetIndices({
+          0,1,2, //ABC
+          1,2,3, //BCD
+
+          4,5,6, //EFG
+          5,6,7, //FGH
+
+          0,1,4, //ABE
+          1,4,6, //BEG
+
+          2,3,5, //CDF
+          3,5,7, //DFH
+        });
     }
 
     std::vector<float> GeneratePoints(){
@@ -24,33 +38,10 @@ public:
         points.push_back({loc.x, 0, loc.z}); // A
         points.push_back({loc.x, 41, loc.z}); // B
         points.push_back({loc.x + weight, 0, loc.z}); // C
-
-        points.push_back({loc.x, 41, loc.z}); // B
-        points.push_back({loc.x + weight, 0, loc.z}); // C
         points.push_back({loc.x + weight, 41, loc.z}); // D
-
         points.push_back({loc.x, 0, loc.z + weight}); // E
         points.push_back({loc.x + weight, 0, loc.z + weight}); // F
         points.push_back({loc.x, 41, loc.z + weight}); // G
-
-        points.push_back({loc.x + weight, 0, loc.z + weight}); // F
-        points.push_back({loc.x, 41, loc.z + weight}); // G
-        points.push_back({loc.x + weight, 41, loc.z + weight}); // H
-
-        points.push_back({loc.x, 0, loc.z}); // A
-        points.push_back({loc.x, 41, loc.z}); // B
-        points.push_back({loc.x, 0, loc.z + weight}); // E
-
-        points.push_back({loc.x, 41, loc.z}); // B
-        points.push_back({loc.x, 0, loc.z + weight}); // E
-        points.push_back({loc.x, 41, loc.z + weight}); // G
-
-        points.push_back({loc.x + weight, 0, loc.z}); // C
-        points.push_back({loc.x + weight, 41, loc.z}); // D
-        points.push_back({loc.x + weight, 0, loc.z + weight}); // F
-
-        points.push_back({loc.x + weight, 41, loc.z}); // D
-        points.push_back({loc.x + weight, 0, loc.z + weight}); // F
         points.push_back({loc.x + weight, 41, loc.z + weight}); // H
 
         std::vector<float> results;
