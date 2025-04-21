@@ -3,19 +3,19 @@
 Cube::Cube() : Drawable() {
   this->position = glm::vec3(0, 0, 0);
   this->size = glm::vec3(1, 1, 1);
+  this->color = glm::vec3(0xFF / 255.0, 0xFF / 255.0, 0xFF / 255.0);
   generateVertices();
 }
 
-Cube::Cube(glm::vec3 position, glm::vec3 size) : Drawable() {
+Cube::Cube(glm::vec3 position, glm::vec3 size, glm::vec3 color) : Drawable() {
   this->position = position;
   this->size = size;
+  this->color = color;
   generateVertices();
 }
 
 void Cube::generateVertices() {
   float x = size.x, y = size.y, z = size.z;
-  glm::vec3 color = glm::vec3(0xFF / 255.0, 0xFF / 255.0, 0xFF / 255.0);
-
   glm::vec3 verticesRaw[] = {// 0: Left-Bottom-Near
                           glm::vec3(0.0f, 0.0f, 0.0f),
                           // 1: Right-Bottom-Near
