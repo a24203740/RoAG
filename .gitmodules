@@ -1,0 +1,3 @@
+[submodule "earcut/earcut.hpp"]
+	path = earcut/earcut.hpp
+	url = https://github.com/mapbox/earcut.hpp.git
