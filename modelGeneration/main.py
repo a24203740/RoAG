@@ -50,10 +50,10 @@ def create_wall_quads(rings, z0, z1):
             p1 = np.array([verts[i + 1][0], verts[i + 1][1], z0])
             p2 = np.array([verts[i + 1][0], verts[i + 1][1], z1])
             p3 = np.array([verts[i][0], verts[i][1], z1])
-            # quads.append([p0, p1, p2])
-            # quads.append([p2, p3, p0])
-            quads.append([p1, p0, p2])
-            quads.append([p3, p2, p0])
+            quads.append([p0, p1, p2])
+            quads.append([p2, p3, p0])
+            # quads.append([p1, p0, p2])
+            # quads.append([p3, p2, p0])
     return quads
 
 def create_wall_bottom(poly: shapely.geometry.Polygon) -> list[shapely.geometry.Polygon]:
@@ -150,6 +150,7 @@ if __name__ == "__main__":
     base_polygon = shapely.geometry.Polygon(outer, holes)
     # vertices is list of vertices, faces is indices of vertices
     floor_vertices_2d, floor_faces, holes_faces = triangulate_shapely_polygon(base_polygon)
+    floor_faces = np.array(floor_faces)
 
     # add z dimension to vertices
     floor_vertices = np.hstack([floor_vertices_2d, np.full((len(floor_vertices_2d), 1), floor_z)])
@@ -164,10 +165,11 @@ if __name__ == "__main__":
 
     # Add floor and roof
     vertices = np.vstack([floor_vertices, roof_vertices])
-    faces = []
+    faces = np.empty((0, 3), dtype=int)
 
     offset = 0
-    faces.extend(floor_faces)
+    # we want to flip floor orientation
+    faces = np.vstack([faces, floor_faces[:, [1, 0, 2]]])
     # faces.extend(f + len(floor_vertices) for f in floor_faces)  # roof
 
     # Add wall triangles
@@ -177,12 +179,13 @@ if __name__ == "__main__":
         vertices = np.vstack([vertices, vert_tuple])
         wall_faces.append([start_index, start_index + 1, start_index + 2])
 
-    faces.extend(wall_faces)
+    faces = np.vstack([faces, np.array(wall_faces)])
 
     # Trimesh poressing and export
 
+    # swap y and z, to make u as world up
+    vertices[:, [1, 2]] = vertices[:, [2, 1]]
     mesh = trimesh.Trimesh(vertices=vertices, faces=faces, process=True)
     mesh.visual = generate_uvs_box_projection_with_tiling(mesh, tile_scale=(1.0, 1.0))
-    print(mesh.visual.uv)
     mesh.export("building.obj", include_normals=True, include_texture=True, include_color=False)
     print("Exported as building.obj")
