@@ -7,7 +7,7 @@
 
 class IPlaneDrawable {
 public:
-    virtual void Update(std::shared_ptr<Window> window) = 0;
+    virtual void Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> shader) = 0;
     virtual void Teardown() = 0;
 };
 

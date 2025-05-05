@@ -27,7 +27,11 @@ private:
     void CheckLinkStatus();
 public:
     void Init();
-    void SetMat4(const std::string &name, const glm::mat4 &mat) const;
+    void SetUniformValue(const std::string &name, const glm::mat4 &mat) const;
+    void SetUniformValue(const std::string &name, const glm::mat3 &mat) const;
+    void SetUniformValue(const std::string &name, const glm::vec3 &vec) const;
+    void SetUniformValue(const std::string &name, const float val) const;
+    void SetUniformValue(const std::string &name, const int val) const;
     void Use();
 };
 

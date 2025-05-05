@@ -1,4 +1,3 @@
-
 #include <sstream>
 #include <string>
 #include <fstream>
@@ -46,7 +45,7 @@ unsigned int Shader::LoadShader(std::string filepath, ShaderType type){
 unsigned int Shader::LoadVertexShader(){
     spdlog::info("Shader: Load vertex shader and compile.");
 
-    unsigned vertex_shader_id = LoadShader(SHADER_DIR "easy.vert", ShaderType::VERTEX);
+    unsigned vertex_shader_id = LoadShader(SHADER_DIR "blinn-phong.vert", ShaderType::VERTEX);
 
     return vertex_shader_id;
 }
@@ -54,7 +53,7 @@ unsigned int Shader::LoadVertexShader(){
 unsigned int Shader::LoadFragmentShader(){
     spdlog::info("Shader: Load fragment shader and compile.");
 
-    unsigned fragment_shader_id = LoadShader(SHADER_DIR "easy.frag", ShaderType::FRAGMENT);
+    unsigned fragment_shader_id = LoadShader(SHADER_DIR "blinn-phong.frag", ShaderType::FRAGMENT);
 
     return fragment_shader_id;
 }
@@ -108,7 +107,23 @@ void Shader::Use(){
     glUseProgram(shader_program_id); 
 }
 
-void Shader::SetMat4(const std::string &name, const glm::mat4 &mat) const
-{
-    glUniformMatrix4fv(glGetUniformLocation(shader_program_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+void Shader::SetUniformValue(const std::string &name, const glm::mat4 &mat) const {
+    GLuint location = glGetUniformLocation(shader_program_id, name.c_str());
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+}
+void Shader::SetUniformValue(const std::string &name, const glm::mat3 &mat) const {
+    GLuint location = glGetUniformLocation(shader_program_id, name.c_str());
+    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+}
+void Shader::SetUniformValue(const std::string &name, const glm::vec3 &vec) const {
+    GLuint location = glGetUniformLocation(shader_program_id, name.c_str());
+    glUniform3fv(location, 1, glm::value_ptr(vec));
+}
+void Shader::SetUniformValue(const std::string &name, const float val) const {
+    GLuint location = glGetUniformLocation(shader_program_id, name.c_str());
+    glUniform1f(location, val);
+}
+void Shader::SetUniformValue(const std::string &name, const int val) const {
+    GLuint location = glGetUniformLocation(shader_program_id, name.c_str());
+    glUniform1i(location, val);
 }

@@ -14,6 +14,8 @@ enum Key {
     KEY_Z = GLFW_KEY_Z,
     KEY_Q = GLFW_KEY_Q,
     KEY_E = GLFW_KEY_E,
+    KEY_K = GLFW_KEY_K,
+    KEY_J = GLFW_KEY_J,
 };
 
 class Window {

@@ -38,7 +38,7 @@ void PlaneFramework::Update(std::shared_ptr<IPlaneDrawable> drawable){
 
         camera->SetValueToShader(shader);
         
-        drawable->Update(PlaneFramework::window);
+        drawable->Update(window, shader);
         
         window->Draw();
     }

@@ -5,6 +5,8 @@ add_executable(ArchGen
     ./core/opengl_shader.cpp
     ./core/opengl_glloader.cpp
     ./core/opengl_drawable.cpp
+    ./core/object.cpp
+    ./core/stb_image.cpp
     
     ./archgen/cube.cpp
     ./archgen/archgen.cpp
