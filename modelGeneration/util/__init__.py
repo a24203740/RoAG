@@ -98,37 +98,37 @@ def offset_polygon(floor_vertices, dist):
     return [pyclipper.scale_from_clipper(path) for path in offset_paths]
 
 
-def generate_wall_by_vertices(
-    vertices: list[tuple[int, int]], offset_dist: float, floor_z: float, height: float
-):
-    walls = []
-
-    inner_offset = offset_polygon(vertices, -offset_dist)[0]
-    inner_offset.append(inner_offset[0])
-
-    for i in range(len(inner_offset) - 1):
-        walls.append(
-            Wall(
-                inner_offset[i][0],
-                inner_offset[i][1],
-                inner_offset[i + 1][0],
-                inner_offset[i + 1][1],
-                floor_z + height,
-            )
-        )
-
-    outer_offset = offset_polygon(vertices, offset_dist)[0]
-    outer_offset.append(outer_offset[0])
-
-    for i in range(len(outer_offset) - 1):
-        walls.append(
-            Wall(
-                outer_offset[i][0],
-                outer_offset[i][1],
-                outer_offset[i + 1][0],
-                outer_offset[i + 1][1],
-                floor_z + height,
-            )
-        )
-
-    return walls
+# def generate_wall_by_vertices(
+#     vertices: list[tuple[int, int]], offset_dist: float, floor_z: float, height: float
+# ):
+#     walls = []
+#
+#     inner_offset = offset_polygon(vertices, -offset_dist)[0]
+#     inner_offset.append(inner_offset[0])
+#
+#     for i in range(len(inner_offset) - 1):
+#         walls.append(
+#             Wall(
+#                 inner_offset[i][0],
+#                 inner_offset[i][1],
+#                 inner_offset[i + 1][0],
+#                 inner_offset[i + 1][1],
+#                 floor_z + height,
+#             )
+#         )
+#
+#     outer_offset = offset_polygon(vertices, offset_dist)[0]
+#     outer_offset.append(outer_offset[0])
+#
+#     for i in range(len(outer_offset) - 1):
+#         walls.append(
+#             Wall(
+#                 outer_offset[i][0],
+#                 outer_offset[i][1],
+#                 outer_offset[i + 1][0],
+#                 outer_offset[i + 1][1],
+#                 floor_z + height,
+#             )
+#         )
+#
+#     return walls
