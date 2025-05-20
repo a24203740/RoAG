@@ -38,6 +38,8 @@ public:
     glm::mat4 view =
         glm::lookAt(cameraPos, cameraPos + GetCameraFront(), upVector);
     shader->SetUniformValue("view", view);
+
+    shader->SetUniformValue("ViewPos", this->cameraPos);
   }
 };
 

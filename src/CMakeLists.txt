@@ -8,6 +8,7 @@ add_executable(ArchGen
     ./core/object.cpp
     ./core/stb_image.cpp
     
+    ./archgen/light.cpp
     ./archgen/archgen.cpp
 )
 
