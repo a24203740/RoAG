@@ -1,9 +1,11 @@
 import json
 
+from shapely.geometry import LinearRing, Polygon
+
 from core.model import Model
 from core.ground import Ground
 from core.wall import Wall
-from util import generate_wall_by_vertices
+from core.walls import Walls
 
 if __name__ == "__main__":
     floor_z = 0
@@ -22,30 +24,31 @@ if __name__ == "__main__":
     model = Model()
 
     for floor in model_json["floors"]:
-        walls: list[Wall] = []
         height: float = floor["height"]
         
         if floor["enable"] == False:
             continue
 
         ground = Ground(outer, inter, floor_z, height)
+        assert type(ground.base_polygon) is Polygon
         model.add_ground(ground)
 
-        walls += generate_wall_by_vertices(
-            list(ground.base_polygon.exterior.coords), offset_dist, floor_z, height
-        )
+        walls = Walls()
+        print ("ext")
+        walls.wall_bottom_generation_from_ring(ground.base_polygon.exterior, offset_dist)
 
         for interiors in ground.base_polygon.interiors:
-            walls += generate_wall_by_vertices(
-                list(interiors.coords), offset_dist, floor_z, height
-            )
+            print ("int")
+            walls.wall_bottom_generation_from_ring(interiors, offset_dist)
 
         for room in floor["rooms"]:
-            walls += generate_wall_by_vertices(
-                [[point[0], point[1]] for point in room], offset_dist, floor_z, height
-            )
+            print ("room")
+            ring = LinearRing(room)
+            walls.wall_bottom_generation_from_ring(ring, offset_dist)
 
-        for wall in walls:
+        walls_obj = walls.wall_generations_from_bottoms(floor_z, height)
+
+        for wall in walls_obj:
             model.add_wall(wall)
             
         floor_z += height
