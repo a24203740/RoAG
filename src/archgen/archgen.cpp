@@ -1,10 +1,7 @@
 #include "archgen.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "ground.hpp"
-#include "polygon_room_ground.hpp"
-#include <array>
 #include <memory>
-#include <vector>
 
 #define MOVE_UNIT 0.4
 
