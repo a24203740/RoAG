@@ -42,8 +42,15 @@ class Wall:
     def _fix_offset(self, c):
         if c - int(c) == 0.875:
             return c + 0.125
+        elif c - int(c) == -0.875:
+            return c + 0.875
         elif c - int(c) == 0.125:
             return c - 0.125
+        elif c - int(c) == -0.125:
+            return c + 0.125
+        else:
+            return c
+        
         
     def get_offset_coord(self):
         return [self.x1, self.y1, self.x2, self.y2]

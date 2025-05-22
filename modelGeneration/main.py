@@ -57,18 +57,19 @@ if __name__ == "__main__":
 
         for wall in walls_obj:
             wall_coord = wall.get_non_offset_coord()
+
+            print(wall_coord)
             
-            if None not in wall_coord :        
-                offset_diff = numpy.array(wall_coord) - numpy.array(wall.get_offset_coord())
-                for door in doors:
-                    if(not None in wall_coord and is_full_overlap(wall_coord[0], wall_coord[1], wall_coord[2], wall_coord[3], door.x1, door.y1, door.x2, door.y2)):
-                        new_door = Door(door.x1 - offset_diff[0], door.y1 - offset_diff[1], door.x2 - offset_diff[2], door.y2 - offset_diff[3], height * 0.5)
-                        wall.dig_a_hole(new_door.to_3D_coordinates())
-                        
-                for window in windows:
-                    if(not None in wall_coord and is_full_overlap(wall_coord[0], wall_coord[1], wall_coord[2], wall_coord[3], window.x1, window.y1, window.x2, window.y2)):
-                        new_window = Window(window.x1 - offset_diff[0], window.y1 - offset_diff[1], window.x2 - offset_diff[2], window.y2 - offset_diff[3], window.y_offset, window.height)
-                        wall.dig_a_hole(new_window.to_3D_coordinates(), True)
+            offset_diff = numpy.array(wall_coord) - numpy.array(wall.get_offset_coord())
+            for door in doors:
+                if(not None in wall_coord and is_full_overlap(wall_coord[0], wall_coord[1], wall_coord[2], wall_coord[3], door.x1, door.y1, door.x2, door.y2)):
+                    new_door = Door(door.x1 - offset_diff[0], door.y1 - offset_diff[1], door.x2 - offset_diff[2], door.y2 - offset_diff[3], height * 0.5)
+                    wall.dig_a_hole(new_door.to_3D_coordinates())
+                    
+            for window in windows:
+                if(not None in wall_coord and is_full_overlap(wall_coord[0], wall_coord[1], wall_coord[2], wall_coord[3], window.x1, window.y1, window.x2, window.y2)):
+                    new_window = Window(window.x1 - offset_diff[0], window.y1 - offset_diff[1], window.x2 - offset_diff[2], window.y2 - offset_diff[3], window.y_offset, window.height)
+                    wall.dig_a_hole(new_window.to_3D_coordinates())
 
             model.add_wall(wall)
             
