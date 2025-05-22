@@ -2,7 +2,10 @@ import numpy
 import shapely
 import pyclipper
 import triangle
-from core.wall import Wall
+
+from typing import Any
+from core.door import Door
+from core.window import Window
 from trimesh import Trimesh
 from trimesh.visual import texture
 
@@ -97,6 +100,29 @@ def offset_polygon(floor_vertices, dist):
     offset_paths = pc.Execute(pyclipper.scale_to_clipper(dist))
     return [pyclipper.scale_from_clipper(path) for path in offset_paths]
 
+def convert_doors_to_door_objects(doors: list[list[tuple[int ,int]]], height: float) -> list[Door]:
+    door_objs: list[Door] = []
+    
+    for door in doors:
+        door_objs.append(Door(door[0][0], door[0][1], door[1][0], door[1][1], height * 0.5))
+
+    return door_objs
+
+def convert_windows_to_window_objects(windows: list[dict[str, Any]]) -> list[Window]:
+    window_objs: list[Window] = []
+    
+    for window in windows:
+        pos = window["pos"]
+        y_offset = window["y_offset"]
+        height = window["height"]
+        window_objs.append(Window(
+            pos[0][0], pos[0][1], pos[1][0], pos[1][1], y_offset, height
+        ))
+
+    return window_objs
+
+def is_full_overlap(x1, y1, x2, y2, x3, y3, x4, y4):
+    return min(x1, x2) <= min(x3, x4) <= max(x1, x2) and min(x1, x2) <= max(x3, x4) <= max(x1, x2) and min(y1, y2) <= min(y3, y4) <= max(y1, y2) and min(y1, y2) <= max(y3, y4) <= max(y1, y2)
 
 # def generate_wall_by_vertices(
 #     vertices: list[tuple[int, int]], offset_dist: float, floor_z: float, height: float
