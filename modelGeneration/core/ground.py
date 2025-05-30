@@ -36,7 +36,11 @@ class Ground:
         return numpy.vstack([faces, faces])
         
     def _process_point(self):
-        base_polygon = shapely.geometry.Polygon(self.outer, self.inner)
+        if len(self.inner) > 0:
+            base_polygon = shapely.geometry.Polygon(self.outer, self.inner)
+        else:
+            base_polygon = shapely.geometry.Polygon(self.outer)
+
         floor_vertices_2d, floor_faces, _ = triangulate_shapely_polygon(base_polygon)
         
         self.base_polygon = base_polygon

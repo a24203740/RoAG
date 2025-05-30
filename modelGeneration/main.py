@@ -48,9 +48,12 @@ if __name__ == "__main__":
     basePolygon = model_json["basePolygon"]
 
     outer: list[tuple[float, float]] = [[point[0], point[1]] for point in basePolygon["outer"]]
-    inter: list[tuple[float, float]] = [
-        [[point[0], point[1]] for point in inter] for inter in basePolygon["inter"]
-    ]
+    inter: list[list[tuple[float, float]]] = []
+    if "inter" in basePolygon:
+        inter = [
+            [[point[0], point[1]] for point in inter] for inter in basePolygon["inter"]
+        ]
+
 
     floor_level = 0
     for floor in model_json["floors"]:

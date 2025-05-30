@@ -37,11 +37,11 @@ def triangulate_shapely_polygon(poly):
         "vertices": coords,
         "segments": numpy.array(segments),
     }
-    if holes:
+    if holes != []:
         data["holes"] = numpy.array(holes)
 
     t = triangle.triangulate(data, "p")
-    return t["vertices"], t["triangles"], t["holes"]
+    return t["vertices"], t["triangles"], t.get("holes", None)
 
 
 def generate_uvs_box_projection_with_tiling(mesh: Trimesh, tile_scale=(1.0, 1.0)):
