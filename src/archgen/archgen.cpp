@@ -26,7 +26,10 @@ void ArchGen::Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> sha
     glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
     return normalMatrix;
   };
-  shader->SetUniformValue("model", glm::mat4(1.0f));
+  glm::mat4 model = glm::mat4(1.0f);
+  model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+  shader->SetUniformValue("model", model);
   shader->SetUniformValue("normalMatrix", generate_normal_matrix(glm::mat4(1.0f)));
   light->setShaderUniform(shader.get());
   for (auto &object : objects) {

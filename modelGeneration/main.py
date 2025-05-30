@@ -10,11 +10,39 @@ from core.window import Window
 from core.walls import Walls
 from util import convert_doors_to_door_objects, convert_windows_to_window_objects, is_full_overlap
 
+import os
+import argparse
+
+def handle_args():
+    dirname = os.path.dirname(__file__)
+    pathname = os.path.join(dirname, '..', 'assets', 'obj')
+    cwd = os.getcwd()
+    pathname = os.path.relpath(pathname, cwd)
+    parser = argparse.ArgumentParser(description="Generate a 3D model from a JSON file.")
+    parser.add_argument("input_json", type=str, help="Path to the model JSON file.")
+    parser.add_argument("--output_path", type=str, default=pathname, help="Output OBJs file path, should be a isolated folder \n (default: %(default)s)")
+    args = parser.parse_args()
+    [input_json, output_path] = [args.input_json, args.output_path]
+    if not os.path.isfile(input_json):
+        parser.print_help()
+        raise FileNotFoundError(f"[ERROR]: Input JSON file '{input_json}' does not exist.")
+    if not os.path.isdir(output_path):
+        parser.print_help()
+        raise NotADirectoryError(f"[ERROR]: Output path '{output_path}' is not a directory.")
+    return input_json, output_path
+
 if __name__ == "__main__":
+    try:
+        [input_json, output_path] = handle_args()
+    except (FileNotFoundError, NotADirectoryError) as e:
+        print(e)
+        exit(1)
+
+     
     floor_z = 0
     offset_dist = 0.5 / 2
 
-    with open("model.json") as f:
+    with open(input_json) as f:
         model_json = json.loads(f.read())
 
     basePolygon = model_json["basePolygon"]
@@ -75,5 +103,6 @@ if __name__ == "__main__":
             
         floor_z += height
 
-    model.export_obj("building.obj")
-    print("Exported as building.obj")
+    output_filename = os.path.join(output_path, "building.obj")
+    model.export_obj(output_filename)
+    print(f"Exported as {output_filename}")
