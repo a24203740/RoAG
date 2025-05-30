@@ -40,7 +40,7 @@ def triangulate_shapely_polygon(poly):
     if holes != []:
         data["holes"] = numpy.array(holes)
 
-    t = triangle.triangulate(data, "p")
+    t = triangle.triangulate(data, "pa100.0")
     return t["vertices"], t["triangles"], t.get("holes", None)
 
 
