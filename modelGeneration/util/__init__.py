@@ -105,15 +105,15 @@ def offset_polygon(floor_vertices, dist):
     offset_paths = pc.Execute(pyclipper.scale_to_clipper(dist))
     return [pyclipper.scale_from_clipper(path) for path in offset_paths]
 
-def convert_doors_to_door_objects(doors: list[list[tuple[int ,int]]], height: float) -> list[Door]:
+def convert_doors_to_door_objects(doors: list[list[tuple[int ,int]]], height: float, base: float) -> list[Door]:
     door_objs: list[Door] = []
     
     for door in doors:
-        door_objs.append(Door(door[0][0], door[0][1], door[1][0], door[1][1], height * 0.5))
+        door_objs.append(Door(door[0][0], door[0][1], door[1][0], door[1][1], height * 0.5, base))
 
     return door_objs
 
-def convert_windows_to_window_objects(windows: list[dict[str, Any]]) -> list[Window]:
+def convert_windows_to_window_objects(windows: list[dict[str, Any]], base: float) -> list[Window]:
     window_objs: list[Window] = []
     
     for window in windows:
@@ -121,7 +121,7 @@ def convert_windows_to_window_objects(windows: list[dict[str, Any]]) -> list[Win
         y_offset = window["y_offset"]
         height = window["height"]
         window_objs.append(Window(
-            pos[0][0], pos[0][1], pos[1][0], pos[1][1], y_offset, height
+            pos[0][0], pos[0][1], pos[1][0], pos[1][1], y_offset, height, base
         ))
 
     return window_objs

@@ -69,8 +69,8 @@ if __name__ == "__main__":
         wall_model = Model()
         print(f"Processing floor: {floor['name']}")
         height: float = floor["height"]
-        doors = convert_doors_to_door_objects(floor["door"], height)
-        windows = convert_windows_to_window_objects(floor["window"])
+        doors = convert_doors_to_door_objects(floor["door"], height, floor_z)
+        windows = convert_windows_to_window_objects(floor["window"], floor_z)
 
         if not floor["enable"]:
             continue
@@ -100,22 +100,20 @@ if __name__ == "__main__":
             offset_diff = numpy.array(wall_coord) - numpy.array(wall.get_offset_coord())
             for door in doors:
                 if(not None in wall_coord and is_full_overlap(wall_coord[0], wall_coord[1], wall_coord[2], wall_coord[3], door.x1, door.y1, door.x2, door.y2)):
-                    new_door = Door(door.x1 - offset_diff[0], door.y1 - offset_diff[1], door.x2 - offset_diff[2], door.y2 - offset_diff[3], height * 0.5)
+                    new_door = Door(door.x1 - offset_diff[0], door.y1 - offset_diff[1], door.x2 - offset_diff[2], door.y2 - offset_diff[3], height * 0.5, floor_z)
                     wall.dig_a_hole(new_door.to_3D_coordinates())
                     
             for window in windows:
                 if(not None in wall_coord and is_full_overlap(wall_coord[0], wall_coord[1], wall_coord[2], wall_coord[3], window.x1, window.y1, window.x2, window.y2)):
-                    new_window = Window(window.x1 - offset_diff[0], window.y1 - offset_diff[1], window.x2 - offset_diff[2], window.y2 - offset_diff[3], window.y_offset, window.height)
+                    new_window = Window(window.x1 - offset_diff[0], window.y1 - offset_diff[1], window.x2 - offset_diff[2], window.y2 - offset_diff[3], window.y_offset, window.height, floor_z)
                     wall.dig_a_hole(new_window.to_3D_coordinates())
 
             wall_model.add_wall(wall)
             
-        floor_z += height
+        floor_z += height + 0.1
         ground_model_name = os.path.join(output_path, f"{ground_model_name}.obj")
         ground_model.export_obj(ground_model_name)
         wall_model_name = os.path.join(output_path, f"{wall_model_name}.obj")
         wall_model.export_obj(wall_model_name)
 
         print(f"Exported as {ground_model_name} and {wall_model_name}")
-        floor_z += height+0.1
-
