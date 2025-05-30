@@ -3,7 +3,7 @@ import shapely
 from util import triangulate_shapely_polygon
 
 class Ground:
-    def __init__(self, outer: list[tuple[int, int]], inner: list[list[tuple[int, int]]], floor_z: float, height: float):
+    def __init__(self, outer: list[tuple[float, float]], inner: list[list[tuple[float, float]]], floor_z: float, height: float):
         self.outer = outer
         self.inner = inner
         self.height = height

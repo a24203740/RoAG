@@ -52,32 +52,41 @@ if __name__ == "__main__":
         [[point[0], point[1]] for point in inter] for inter in basePolygon["inter"]
     ]
 
-    model = Model()
-
+    floor_level = 0
     for floor in model_json["floors"]:
+        floor_level += 1
+        ground_model_name = f"{floor['name']}_ground"
+        wall_model_name = f"{floor['name']}_wall"
+        if ground_model_name is None:
+            ground_model_name = f"{floor_level}F_ground"
+        if wall_model_name is None:
+            wall_model_name = f"{floor_level}F_wall"
+
+        ground_model = Model()
+        wall_model = Model()
+        print(f"Processing floor: {floor['name']}")
         height: float = floor["height"]
         doors = convert_doors_to_door_objects(floor["door"], height)
         windows = convert_windows_to_window_objects(floor["window"])
 
-        print(doors)
-
-        if floor["enable"] == False:
+        if not floor["enable"]:
             continue
 
         ground = Ground(outer, inter, floor_z, height)
+        print("ground")
         assert type(ground.base_polygon) is Polygon
-        model.add_ground(ground)
+        ground_model.add_ground(ground)
 
         walls = Walls()
         print ("ext")
         walls.wall_bottom_generation_from_ring(ground.base_polygon.exterior, offset_dist)
 
+        print ("int")
         for interiors in ground.base_polygon.interiors:
-            print ("int")
             walls.wall_bottom_generation_from_ring(interiors, offset_dist)
 
+        print ("room")
         for room in floor["rooms"]:
-            print ("room")
             ring = LinearRing(room)
             walls.wall_bottom_generation_from_ring(ring, offset_dist)
 
@@ -85,9 +94,6 @@ if __name__ == "__main__":
 
         for wall in walls_obj:
             wall_coord = wall.get_non_offset_coord()
-
-            print(wall_coord)
-            
             offset_diff = numpy.array(wall_coord) - numpy.array(wall.get_offset_coord())
             for door in doors:
                 if(not None in wall_coord and is_full_overlap(wall_coord[0], wall_coord[1], wall_coord[2], wall_coord[3], door.x1, door.y1, door.x2, door.y2)):
@@ -99,10 +105,14 @@ if __name__ == "__main__":
                     new_window = Window(window.x1 - offset_diff[0], window.y1 - offset_diff[1], window.x2 - offset_diff[2], window.y2 - offset_diff[3], window.y_offset, window.height)
                     wall.dig_a_hole(new_window.to_3D_coordinates())
 
-            model.add_wall(wall)
+            wall_model.add_wall(wall)
             
         floor_z += height
+        ground_model_name = os.path.join(output_path, f"{ground_model_name}.obj")
+        ground_model.export_obj(ground_model_name)
+        wall_model_name = os.path.join(output_path, f"{wall_model_name}.obj")
+        wall_model.export_obj(wall_model_name)
 
-    output_filename = os.path.join(output_path, "building.obj")
-    model.export_obj(output_filename)
-    print(f"Exported as {output_filename}")
+        print(f"Exported as {ground_model_name} and {wall_model_name}")
+        floor_z += height+0.1
+

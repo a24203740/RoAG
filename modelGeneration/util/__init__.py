@@ -15,17 +15,22 @@ def triangulate_shapely_polygon(poly):
     assert isinstance(poly, shapely.geometry.Polygon)
 
     coords = list(poly.exterior.coords)
-    segments = [(i, i + 1) for i in range(len(coords) - 1)]
+    coords.pop()  # Remove the last point which is a repeat of the first
+    N = len(coords)
+    segments = [(i, (i + 1) % N) for i in range(len(coords))]
 
     holes = []
     for interior in poly.interiors:
         hole_coords = list(interior.coords)
+        hole_coords.pop()  # Remove the last point which is a repeat of the first
+        N = len(hole_coords)
         start_index = len(coords)
         coords.extend(hole_coords)
         segments.extend(
-            (i, i + 1) for i in range(start_index, start_index + len(hole_coords) - 1)
+            (i + start_index, ((i + 1) % N) + start_index) for i in range(N)
         )
         holes.append(numpy.mean(hole_coords[:-1], axis=0))
+    
 
     coords = numpy.array(coords)
     data = {
