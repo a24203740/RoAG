@@ -30,7 +30,7 @@ public:
     this->diffuse = diffuse;
     this->specular = specular;
     if (mode == DIRECTIONAL) {
-      this->direction = posOrDir;
+      this->direction = glm::normalize(posOrDir);
     } else if (mode == POINT) {
       this->position = posOrDir;
     }
@@ -45,6 +45,7 @@ public:
     mode = ERROR;
   }
   void setShaderUniform(Shader* shader);
+  void setShadowShaderUniform(Shader* shader, bool isDirectional);
 };
 
 #endif // !LIGHT_H

@@ -11,6 +11,7 @@ private:
     std::shared_ptr<Light> light;
 public:
     ArchGen();
-    virtual void Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> shader);
-    virtual void Teardown();
+    virtual void Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> shader) override;
+    virtual void GenShadowMap(std::shared_ptr<Shader> shader, bool directional) override;
+    virtual void Teardown() override;
 };

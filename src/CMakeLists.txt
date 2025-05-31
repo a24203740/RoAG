@@ -7,6 +7,7 @@ add_executable(ArchGen
     ./core/opengl_drawable.cpp
     ./core/object.cpp
     ./core/stb_image.cpp
+    ./core/shodow_map.cpp
     
     ./archgen/light.cpp
     ./archgen/archgen.cpp

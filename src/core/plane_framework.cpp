@@ -18,7 +18,7 @@ std::shared_ptr<PlaneFramework> PlaneFramework::GetInstance() {
 }
 PlaneFramework::PlaneFramework() {
     spdlog::info("PlaneFramework: Constructor");
-    shader = nullptr;
+    sceneShader = nullptr;
     camera = nullptr;
     window = nullptr;
 }
@@ -26,14 +26,18 @@ PlaneFramework::PlaneFramework() {
 
 void PlaneFramework::Init(){
     spdlog::info("PlaneFramework: Init Phase");
-    shader = std::make_shared<Shader>();
+    sceneShader = std::make_shared<Shader>();
+    dirShadowShader = std::make_shared<Shader>();
+    shadowMap = std::make_shared<ShadowMap>();
     camera = std::make_shared<Camera>();
     window = std::make_shared<Window>(camera);
     window->Init(WINDOW_WIDTH, WINDOW_HEIGHT);
     GLLoader::Init();
-    shader->Init();
+    sceneShader->Init("blinn-phong");
+    dirShadowShader->Init("dir-shadow");
+    shadowMap->Init();
     glEnable(GL_DEPTH_TEST);
-    // glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
@@ -42,13 +46,21 @@ void PlaneFramework::Init(){
 void PlaneFramework::Update(std::shared_ptr<IPlaneDrawable> drawable){
     spdlog::info("PlaneFramework: Update Phase");
     while(!window->IsWindowShouldClose()){
-        window->SetupWindowPerference(WINDOW_WIDTH, WINDOW_HEIGHT);
-        shader->Use();
-      
-        camera->UpdateCameraPosition();
-        camera->SetValueToShader(shader, WINDOW_WIDTH, WINDOW_HEIGHT);
         
-        drawable->Update(window, shader);
+        camera->UpdateCameraPosition();
+
+        dirShadowShader->Use();
+        shadowMap->GenDirectionSetup(); 
+        drawable->GenShadowMap(dirShadowShader, true);
+        shadowMap->GenDirectionCleanup();
+
+        sceneShader->Use();
+        window->SetupWindowPerference(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        camera->SetValueToShader(sceneShader, WINDOW_WIDTH, WINDOW_HEIGHT);
+        shadowMap->SetShaderUniform(sceneShader.get());
+        
+        drawable->Update(window, sceneShader);
         
         window->Draw();
     }

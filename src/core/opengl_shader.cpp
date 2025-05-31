@@ -1,5 +1,4 @@
 #include <sstream>
-#include <string>
 #include <fstream>
 
 #include "glad/glad.h"
@@ -8,8 +7,9 @@
 
 #include "opengl_shader.hpp"
 
-void Shader::Init(){
+void Shader::Init(std::string shaderName){
     spdlog::info("Shader: Init Phase");
+    this->shaderName = shaderName;
     Shader::BindProgram();
 }
 
@@ -45,7 +45,7 @@ unsigned int Shader::LoadShader(std::string filepath, ShaderType type){
 unsigned int Shader::LoadVertexShader(){
     spdlog::info("Shader: Load vertex shader and compile.");
 
-    unsigned vertex_shader_id = LoadShader(SHADER_DIR "blinn-phong.vert", ShaderType::VERTEX);
+    unsigned vertex_shader_id = LoadShader(SHADER_DIR + this->shaderName + ".vert", ShaderType::VERTEX);
 
     return vertex_shader_id;
 }
@@ -53,7 +53,7 @@ unsigned int Shader::LoadVertexShader(){
 unsigned int Shader::LoadFragmentShader(){
     spdlog::info("Shader: Load fragment shader and compile.");
 
-    unsigned fragment_shader_id = LoadShader(SHADER_DIR "blinn-phong.frag", ShaderType::FRAGMENT);
+    unsigned fragment_shader_id = LoadShader(SHADER_DIR + this->shaderName + ".frag", ShaderType::FRAGMENT);
 
     return fragment_shader_id;
 }

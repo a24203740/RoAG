@@ -1,10 +1,11 @@
+#include <spdlog/spdlog.h>
+
 #include "archgen.hpp"
 #include "glm/ext/vector_float3.hpp"
 #include "ground.hpp"
 #include <memory>
 
-#define MOVE_UNIT 0.4
-#define FLOOR_LEVEL 2
+#define FLOOR_LEVEL 1
 
 ArchGen::ArchGen() : IPlaneDrawable() {
   const std::string objDir = "./assets/obj/";
@@ -25,17 +26,28 @@ ArchGen::ArchGen() : IPlaneDrawable() {
   }
 
   light = std::make_shared<Light>(glm::vec3(1.0), glm::vec3(1.0), glm::vec3(1.0),
-                                  glm::vec3(0.0, 10.0, 3.0), Light::POINT);
+                                  glm::vec3(100.0, 50.0, -75.0), Light::DIRECTIONAL);
 }
 
 void ArchGen::Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> shader) {
-
   light->setShaderUniform(shader.get());
   for (auto &object : objects) {
     object.second->setShaderUniform(shader.get());
     object.second->render();
   }
+}
 
+void ArchGen::GenShadowMap(std::shared_ptr<Shader> shader, bool directional) {
+  if (directional) {
+    light->setShadowShaderUniform(shader.get(), directional);
+    for (auto &object : objects) {
+      object.second->setShaderUniform(shader.get());
+      object.second->render();
+    }
+  }
+  else {
+    spdlog::warn("ArchGen::GenShadowMap: non-directional shadow map generation is not supported.");
+  }
 }
 
 void ArchGen::Teardown() {
