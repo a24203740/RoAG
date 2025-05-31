@@ -10,6 +10,7 @@ add_executable(ArchGen
     
     ./archgen/light.cpp
     ./archgen/archgen.cpp
+    ./archgen/model.cpp
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE SHADER_DIR="${CMAKE_CURRENT_SOURCE_DIR}/shaders/")

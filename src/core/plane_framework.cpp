@@ -48,3 +48,4 @@ void PlaneFramework::Teardown(){
     spdlog::info("PlaneFramework: Teardown Phase");
     window->Teardown();
 }
+

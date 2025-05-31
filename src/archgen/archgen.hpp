@@ -1,12 +1,12 @@
 #include "../core/plane_drawable.hpp"
 #include "../core/opengl_drawable.hpp"
-#include "../core/object.h"
+#include "model.h"
 #include "light.h"
 #include <unordered_map>
 
 class ArchGen : public IPlaneDrawable {
 private:
-    std::unordered_map<std::string, std::shared_ptr<Object>> objects;
+    std::unordered_map<std::string, std::shared_ptr<Model>> objects;
     std::shared_ptr<Drawable> ground;
     std::shared_ptr<Light> light;
 public:

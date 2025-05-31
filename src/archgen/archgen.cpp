@@ -9,16 +9,17 @@
 ArchGen::ArchGen() : IPlaneDrawable() {
   const std::string objDir = "./assets/obj/";
   const std::string textureDir = "./assets/texture/";
-  
+  const std::string groundTexture = textureDir + "ground.jpg";
+  const std::string wallTexture = textureDir + "wall.jpg";
+  glm::mat4 modelMatrix = glm::mat4(1.0f);
+  modelMatrix = glm::scale(modelMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
   for (int level = 1; level <= FLOOR_LEVEL; level++) {
     string groundName = to_string(level) + "F_ground";
     string wallName = to_string(level) + "F_wall";
-    std::shared_ptr<Object> ground = std::make_shared<Object>(objDir + groundName + ".obj");
-    std::shared_ptr<Object> wall = std::make_shared<Object>(objDir + wallName + ".obj");
-    ground->load_to_buffer();
-    ground->load_texture(textureDir + "ground.jpg");
-    wall->load_to_buffer();
-    wall->load_texture(textureDir + "wall.jpg");
+    std::shared_ptr<Model> ground = std::make_shared<Model>(objDir + groundName + ".obj", groundTexture);
+    std::shared_ptr<Model> wall = std::make_shared<Model>(objDir + wallName + ".obj", wallTexture);
+    ground->SetModel(modelMatrix);
+    wall->SetModel(modelMatrix);
     objects.emplace(groundName, ground);
     objects.emplace(wallName, wall);
   }
@@ -29,17 +30,9 @@ ArchGen::ArchGen() : IPlaneDrawable() {
 
 void ArchGen::Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> shader) {
 
-  auto generate_normal_matrix = [](glm::mat4 model) -> glm::mat3 {
-    glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
-    return normalMatrix;
-  };
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-  shader->SetUniformValue("model", model);
-  shader->SetUniformValue("normalMatrix", generate_normal_matrix(glm::mat4(1.0f)));
   light->setShaderUniform(shader.get());
   for (auto &object : objects) {
+    object.second->setShaderUniform(shader.get());
     object.second->render();
   }
 
