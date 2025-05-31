@@ -33,8 +33,6 @@ class Walls:
         self.wall_bottoms.append(generated_wall_bottom)
 
     def wall_generations_from_bottoms (self, floor_z: float, height: float) -> list[Wall]:
-        for wall_bottom in self.wall_bottoms:
-            print(wall_bottom)
         wall_bottom = shapely.set_operations.union_all(self.wall_bottoms)
         unioned_wall_bottoms: list[Polygon] = []
         if wall_bottom.geom_type == "MultiPolygon":

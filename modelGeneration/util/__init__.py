@@ -15,28 +15,33 @@ def triangulate_shapely_polygon(poly):
     assert isinstance(poly, shapely.geometry.Polygon)
 
     coords = list(poly.exterior.coords)
-    segments = [(i, i + 1) for i in range(len(coords) - 1)]
+    coords.pop()  # Remove the last point which is a repeat of the first
+    N = len(coords)
+    segments = [(i, (i + 1) % N) for i in range(len(coords))]
 
     holes = []
     for interior in poly.interiors:
         hole_coords = list(interior.coords)
+        hole_coords.pop()  # Remove the last point which is a repeat of the first
+        N = len(hole_coords)
         start_index = len(coords)
         coords.extend(hole_coords)
         segments.extend(
-            (i, i + 1) for i in range(start_index, start_index + len(hole_coords) - 1)
+            (i + start_index, ((i + 1) % N) + start_index) for i in range(N)
         )
         holes.append(numpy.mean(hole_coords[:-1], axis=0))
+    
 
     coords = numpy.array(coords)
     data = {
         "vertices": coords,
         "segments": numpy.array(segments),
     }
-    if holes:
+    if holes != []:
         data["holes"] = numpy.array(holes)
 
-    t = triangle.triangulate(data, "p")
-    return t["vertices"], t["triangles"], t["holes"]
+    t = triangle.triangulate(data, "pa100.0")
+    return t["vertices"], t["triangles"], t.get("holes", None)
 
 
 def generate_uvs_box_projection_with_tiling(mesh: Trimesh, tile_scale=(1.0, 1.0)):
@@ -100,15 +105,15 @@ def offset_polygon(floor_vertices, dist):
     offset_paths = pc.Execute(pyclipper.scale_to_clipper(dist))
     return [pyclipper.scale_from_clipper(path) for path in offset_paths]
 
-def convert_doors_to_door_objects(doors: list[list[tuple[int ,int]]], height: float) -> list[Door]:
+def convert_doors_to_door_objects(doors: list[list[tuple[int ,int]]], height: float, base: float) -> list[Door]:
     door_objs: list[Door] = []
     
     for door in doors:
-        door_objs.append(Door(door[0][0], door[0][1], door[1][0], door[1][1], height * 0.5))
+        door_objs.append(Door(door[0][0], door[0][1], door[1][0], door[1][1], height * 0.5, base))
 
     return door_objs
 
-def convert_windows_to_window_objects(windows: list[dict[str, Any]]) -> list[Window]:
+def convert_windows_to_window_objects(windows: list[dict[str, Any]], base: float) -> list[Window]:
     window_objs: list[Window] = []
     
     for window in windows:
@@ -116,7 +121,7 @@ def convert_windows_to_window_objects(windows: list[dict[str, Any]]) -> list[Win
         y_offset = window["y_offset"]
         height = window["height"]
         window_objs.append(Window(
-            pos[0][0], pos[0][1], pos[1][0], pos[1][1], y_offset, height
+            pos[0][0], pos[0][1], pos[1][0], pos[1][1], y_offset, height, base
         ))
 
     return window_objs

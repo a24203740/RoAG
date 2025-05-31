@@ -4,17 +4,24 @@
 #include <memory>
 
 #define MOVE_UNIT 0.4
+#define FLOOR_LEVEL 2
 
 ArchGen::ArchGen() : IPlaneDrawable() {
   const std::string objDir = "./assets/obj/";
   const std::string textureDir = "./assets/texture/";
   
-
-  std::shared_ptr<Object> arch = std::make_shared<Object>(objDir + "building.obj");
-  arch->load_to_buffer();
-  arch->load_texture(textureDir + "track.jpg");
-
-  objects.emplace("arch", arch);
+  for (int level = 1; level <= FLOOR_LEVEL; level++) {
+    string groundName = to_string(level) + "F_ground";
+    string wallName = to_string(level) + "F_wall";
+    std::shared_ptr<Object> ground = std::make_shared<Object>(objDir + groundName + ".obj");
+    std::shared_ptr<Object> wall = std::make_shared<Object>(objDir + wallName + ".obj");
+    ground->load_to_buffer();
+    ground->load_texture(textureDir + "ground.jpg");
+    wall->load_to_buffer();
+    wall->load_texture(textureDir + "wall.jpg");
+    objects.emplace(groundName, ground);
+    objects.emplace(wallName, wall);
+  }
 
   light = std::make_shared<Light>(glm::vec3(1.0), glm::vec3(1.0), glm::vec3(1.0),
                                   glm::vec3(0.0, 10.0, 3.0), Light::POINT);
@@ -26,7 +33,10 @@ void ArchGen::Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> sha
     glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(model)));
     return normalMatrix;
   };
-  shader->SetUniformValue("model", glm::mat4(1.0f));
+  glm::mat4 model = glm::mat4(1.0f);
+  model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+  shader->SetUniformValue("model", model);
   shader->SetUniformValue("normalMatrix", generate_normal_matrix(glm::mat4(1.0f)));
   light->setShaderUniform(shader.get());
   for (auto &object : objects) {
