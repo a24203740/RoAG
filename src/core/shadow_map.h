@@ -15,6 +15,8 @@ public:
   void Init();
   void GenDirectionSetup();
   void GenDirectionCleanup();
+  void GenPointSetup();
+  void GenPointCleanup();
   void SetShaderUniform(Shader* shader);
 };
 #endif // SHADOW_MAP_H

@@ -11,7 +11,7 @@
 class PlaneFramework {
 private:
     std::shared_ptr<Window> window;
-    std::shared_ptr<Shader> sceneShader, dirShadowShader;
+    std::shared_ptr<Shader> sceneShader, dirShadowShader, pointShadowShader;
     std::shared_ptr<Camera> camera;
     std::shared_ptr<ShadowMap> shadowMap;
 

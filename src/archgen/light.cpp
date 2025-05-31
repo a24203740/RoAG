@@ -1,6 +1,4 @@
 #include "light.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 #include <spdlog/spdlog.h>
 
 void Light::setShaderUniform(Shader *shader) {
@@ -15,28 +13,30 @@ void Light::setShaderUniform(Shader *shader) {
   if (this->mode == lightMode::DIRECTIONAL) {
     shader->SetUniformValue("light.mode", 0);
     shader->SetUniformValue("light.direction", direction);
+    shader->SetUniformValue("lightSpaceMatrix", this->lightSpaceMatrixes[0]);
   } else if (this->mode == lightMode::POINT) {
     shader->SetUniformValue("light.mode", 1);
     shader->SetUniformValue("light.position", position);
+    shader->SetUniformValue("farPlane", 25.0f);
   }
-  this->setShadowShaderUniform(shader, this->mode == lightMode::DIRECTIONAL);
 }
 
-void Light::setShadowShaderUniform(Shader *shader, bool isDirectional) {
+void Light::setShadowShaderUniform(Shader *shader) {
   if (this->mode == lightMode::ERROR) {
     spdlog::error("Light: Error light mode.");
     return;
   }
-  if (this->mode != lightMode::DIRECTIONAL && isDirectional) {
-    spdlog::error(
-        "Light: setShadowShaderUniform called with non-directional light.");
+  if (this->mode == lightMode::DIRECTIONAL) {
+    shader->SetUniformValue("lightSpaceMatrix", this->lightSpaceMatrixes[0]);
+  } else if (this->mode == lightMode::POINT) {
+    for (int i = 0; i < 6; ++i) {
+      std::string name = "lightSpaceMatrix[" + std::to_string(i) + "]";
+      shader->SetUniformValue(name, this->lightSpaceMatrixes[i]);
+    }
+    shader->SetUniformValue("lightPos", position);
+    shader->SetUniformValue("farPlane", 25.0f);
+  } else {
+    spdlog::error("Light: Unsupported light mode for shadow mapping.");
     return;
   }
-  glm::mat4 lightProjection =
-      glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -100.0f, 100.0f);
-  glm::mat4 lightView =
-      glm::lookAt(direction, glm::vec3(0.0f, 0.0f, 0.0f),
-                  glm::vec3(0.0f, 1.0f, 0.0f));
-  glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-  shader->SetUniformValue("lightSpaceMatrix", lightSpaceMatrix);
 }

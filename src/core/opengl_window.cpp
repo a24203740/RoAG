@@ -1,3 +1,4 @@
+#include <spdlog/spdlog.h>
 #include <memory>
 #include <spdlog/spdlog.h>
 
@@ -50,6 +51,12 @@ void Window::KeyCallback(GLFWwindow *window, int key, int scancode, int action,
   }
   if (key == GLFW_KEY_J) {
     camera->TurnUp(val);
+  }
+  if (key == GLFW_KEY_T) {
+    spdlog::info("Camera Position: {}, {}, {}", 
+                 camera->GetCameraPos().x, 
+                 camera->GetCameraPos().y, 
+                 camera->GetCameraPos().z);
   }
 }
 

@@ -53,12 +53,22 @@ void ShadowMap::GenDirectionCleanup() {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ShadowMap::GenPointSetup() {
+  glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+  glBindFramebuffer(GL_FRAMEBUFFER, pointDepthMapFBO);
+  glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+void ShadowMap::GenPointCleanup() {
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void ShadowMap::SetShaderUniform(Shader* shader) {
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, directionDepthMap);
   shader->SetUniformValue("dirShadowMap", 1);
 
-  // glActiveTexture(GL_TEXTURE2);
-  // glBindTexture(GL_TEXTURE_CUBE_MAP, pointDepthMap);
-  // shader->SetUniformValue("pointShadowMap", 2);
+  glActiveTexture(GL_TEXTURE2);
+  glBindTexture(GL_TEXTURE_CUBE_MAP, pointDepthMap);
+  shader->SetUniformValue("pointShadowMap", 2);
 }

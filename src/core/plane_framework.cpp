@@ -19,6 +19,8 @@ std::shared_ptr<PlaneFramework> PlaneFramework::GetInstance() {
 PlaneFramework::PlaneFramework() {
     spdlog::info("PlaneFramework: Constructor");
     sceneShader = nullptr;
+    dirShadowShader = nullptr;
+    pointShadowShader = nullptr;
     camera = nullptr;
     window = nullptr;
 }
@@ -28,6 +30,7 @@ void PlaneFramework::Init(){
     spdlog::info("PlaneFramework: Init Phase");
     sceneShader = std::make_shared<Shader>();
     dirShadowShader = std::make_shared<Shader>();
+    pointShadowShader = std::make_shared<Shader>();
     shadowMap = std::make_shared<ShadowMap>();
     camera = std::make_shared<Camera>();
     window = std::make_shared<Window>(camera);
@@ -35,6 +38,7 @@ void PlaneFramework::Init(){
     GLLoader::Init();
     sceneShader->Init("blinn-phong");
     dirShadowShader->Init("dir-shadow");
+    pointShadowShader->Init("point-shadow", true);
     shadowMap->Init();
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -49,10 +53,15 @@ void PlaneFramework::Update(std::shared_ptr<IPlaneDrawable> drawable){
         
         camera->UpdateCameraPosition();
 
-        dirShadowShader->Use();
-        shadowMap->GenDirectionSetup(); 
-        drawable->GenShadowMap(dirShadowShader, true);
-        shadowMap->GenDirectionCleanup();
+        // dirShadowShader->Use();
+        // shadowMap->GenDirectionSetup(); 
+        // drawable->GenShadowMap(dirShadowShader, true);
+        // shadowMap->GenDirectionCleanup();
+
+        pointShadowShader->Use();
+        shadowMap->GenPointSetup();
+        drawable->GenShadowMap(pointShadowShader, false);
+        shadowMap->GenPointCleanup();
 
         sceneShader->Use();
         window->SetupWindowPerference(WINDOW_WIDTH, WINDOW_HEIGHT);

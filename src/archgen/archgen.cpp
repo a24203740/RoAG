@@ -26,11 +26,14 @@ ArchGen::ArchGen() : IPlaneDrawable() {
   }
 
   light = std::make_shared<Light>(glm::vec3(1.0), glm::vec3(1.0), glm::vec3(1.0),
-                                  glm::vec3(100.0, 50.0, -75.0), Light::DIRECTIONAL);
+                                  glm::vec3(-100.0, -50.0, 75.0), Light::DIRECTIONAL);
+  pointLight = std::make_shared<Light>(glm::vec3(1.0), glm::vec3(1.0), glm::vec3(1.0),
+                                           glm::vec3(9.0, 17.0, 68.0), Light::POINT);
 }
 
 void ArchGen::Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> shader) {
-  light->setShaderUniform(shader.get());
+  // light->setShaderUniform(shader.get());
+  pointLight->setShaderUniform(shader.get());
   for (auto &object : objects) {
     object.second->setShaderUniform(shader.get());
     object.second->render();
@@ -39,14 +42,14 @@ void ArchGen::Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> sha
 
 void ArchGen::GenShadowMap(std::shared_ptr<Shader> shader, bool directional) {
   if (directional) {
-    light->setShadowShaderUniform(shader.get(), directional);
-    for (auto &object : objects) {
-      object.second->setShaderUniform(shader.get());
-      object.second->render();
-    }
+    light->setShadowShaderUniform(shader.get());
   }
   else {
-    spdlog::warn("ArchGen::GenShadowMap: non-directional shadow map generation is not supported.");
+    pointLight->setShadowShaderUniform(shader.get());
+  }
+  for (auto &object : objects) {
+    object.second->setShaderUniform(shader.get());
+    object.second->render();
   }
 }
 
