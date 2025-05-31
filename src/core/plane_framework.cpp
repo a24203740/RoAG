@@ -1,9 +1,13 @@
 #include <spdlog/spdlog.h>
 
+#include <glad/glad.h>
+#ifdef __linux__
+#include <GL/gl.h>
+#else
+#include <OpenGL/gl.h>
+#endif
 #include "plane_framework.hpp"
 #include "opengl_glloader.hpp"
-#include "opengl_shader.hpp"
-#include "plane_drawable.hpp"
 
 std::shared_ptr<PlaneFramework> PlaneFramework::instance = nullptr;
 std::shared_ptr<PlaneFramework> PlaneFramework::GetInstance() {
@@ -25,18 +29,24 @@ void PlaneFramework::Init(){
     shader = std::make_shared<Shader>();
     camera = std::make_shared<Camera>();
     window = std::make_shared<Window>(camera);
-    window->Init();
+    window->Init(WINDOW_WIDTH, WINDOW_HEIGHT);
     GLLoader::Init();
     shader->Init();
+    glEnable(GL_DEPTH_TEST);
+    // glDepthFunc(GL_LEQUAL);
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
 }
 
 void PlaneFramework::Update(std::shared_ptr<IPlaneDrawable> drawable){
     spdlog::info("PlaneFramework: Update Phase");
     while(!window->IsWindowShouldClose()){
-        window->SetupWindowPerference();
+        window->SetupWindowPerference(WINDOW_WIDTH, WINDOW_HEIGHT);
         shader->Use();
-
-        camera->SetValueToShader(shader);
+      
+        camera->UpdateCameraPosition();
+        camera->SetValueToShader(shader, WINDOW_WIDTH, WINDOW_HEIGHT);
         
         drawable->Update(window, shader);
         
