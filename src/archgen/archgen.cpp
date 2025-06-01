@@ -25,9 +25,14 @@ ArchGen::ArchGen() : IPlaneDrawable() {
     objects.emplace(wallName, wall);
   }
 
-  light = std::make_shared<Light>(glm::vec3(0.0), glm::vec3(0.5), glm::vec3(0.3),
+  glm::vec3 sunsetColor[3] = {
+    glm::vec3(235.0, 90.0, 60.0) / 255.0f, 
+    glm::vec3(223.0, 151.0, 85.0) / 255.0f,
+    glm::vec3(231.0, 210.0, 131.0) / 255.0f
+  };
+  light = std::make_shared<Light>(sunsetColor[0], sunsetColor[1], sunsetColor[2],
                                   glm::vec3(-100.0, -50.0, 75.0), Light::DIRECTIONAL);
-  pointLight = std::make_shared<Light>(glm::vec3(1.0), glm::vec3(1.0), glm::vec3(1.0),
+  pointLight = std::make_shared<Light>(glm::vec3(0.5), glm::vec3(0.5), glm::vec3(0.5),
                                            glm::vec3(9.0, 17.0, 68.0), Light::POINT);
 }
 
