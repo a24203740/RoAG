@@ -14,6 +14,6 @@ private:
 public:
     ArchGen();
     virtual void Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> shader) override;
-    virtual void GenShadowMap(std::shared_ptr<Shader> shader, bool directional) override;
+    virtual void GenShadowMap(std::shared_ptr<Shader> shader, bool directional, Camera* camera) override;
     virtual void Teardown() override;
 };

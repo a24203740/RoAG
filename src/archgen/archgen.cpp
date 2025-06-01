@@ -25,14 +25,14 @@ ArchGen::ArchGen() : IPlaneDrawable() {
     objects.emplace(wallName, wall);
   }
 
-  light = std::make_shared<Light>(glm::vec3(1.0), glm::vec3(1.0), glm::vec3(1.0),
+  light = std::make_shared<Light>(glm::vec3(0.0), glm::vec3(0.5), glm::vec3(0.3),
                                   glm::vec3(-100.0, -50.0, 75.0), Light::DIRECTIONAL);
   pointLight = std::make_shared<Light>(glm::vec3(1.0), glm::vec3(1.0), glm::vec3(1.0),
                                            glm::vec3(9.0, 17.0, 68.0), Light::POINT);
 }
 
 void ArchGen::Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> shader) {
-  // light->setShaderUniform(shader.get());
+  light->setShaderUniform(shader.get());
   pointLight->setShaderUniform(shader.get());
   for (auto &object : objects) {
     object.second->setShaderUniform(shader.get());
@@ -40,7 +40,7 @@ void ArchGen::Update(std::shared_ptr<Window> window, std::shared_ptr<Shader> sha
   }
 }
 
-void ArchGen::GenShadowMap(std::shared_ptr<Shader> shader, bool directional) {
+void ArchGen::GenShadowMap(std::shared_ptr<Shader> shader, bool directional, Camera* camera) {
   if (directional) {
     light->setShadowShaderUniform(shader.get());
   }

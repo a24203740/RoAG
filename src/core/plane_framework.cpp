@@ -53,14 +53,14 @@ void PlaneFramework::Update(std::shared_ptr<IPlaneDrawable> drawable){
         
         camera->UpdateCameraPosition();
 
-        // dirShadowShader->Use();
-        // shadowMap->GenDirectionSetup(); 
-        // drawable->GenShadowMap(dirShadowShader, true);
-        // shadowMap->GenDirectionCleanup();
+        dirShadowShader->Use();
+        shadowMap->GenDirectionSetup(); 
+        drawable->GenShadowMap(dirShadowShader, true, camera.get());
+        shadowMap->GenDirectionCleanup();
 
         pointShadowShader->Use();
         shadowMap->GenPointSetup();
-        drawable->GenShadowMap(pointShadowShader, false);
+        drawable->GenShadowMap(pointShadowShader, false, camera.get());
         shadowMap->GenPointCleanup();
 
         sceneShader->Use();

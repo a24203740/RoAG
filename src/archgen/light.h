@@ -75,6 +75,13 @@ public:
     this->direction = glm::vec3(0.0f);
     mode = ERROR;
   }
+  void SetPosition(glm::vec3 position) {
+    if (mode != POINT) {
+      return; // Only point lights can change position
+    }
+    this->position = position;
+    calculateLightSpaceMatrixes();
+  }
   void setShaderUniform(Shader* shader);
   void setShadowShaderUniform(Shader* shader);
 };

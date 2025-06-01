@@ -6,18 +6,17 @@ void Light::setShaderUniform(Shader *shader) {
     spdlog::error("Light: Error light mode.");
     return;
   }
-  shader->SetUniformValue("light.ambient", ambient);
-  shader->SetUniformValue("light.diffuse", diffuse);
-  shader->SetUniformValue("light.specular", specular);
+  std::string lightName = (this->mode == lightMode::DIRECTIONAL) ? "dirLight" : "pointLight";
+  shader->SetUniformValue(lightName + ".ambient", ambient);
+  shader->SetUniformValue(lightName + ".diffuse", diffuse);
+  shader->SetUniformValue(lightName + ".specular", specular);
 
   if (this->mode == lightMode::DIRECTIONAL) {
-    shader->SetUniformValue("light.mode", 0);
-    shader->SetUniformValue("light.direction", direction);
-    shader->SetUniformValue("lightSpaceMatrix", this->lightSpaceMatrixes[0]);
+    shader->SetUniformValue(lightName + ".direction", direction);
+    shader->SetUniformValue(lightName + ".lightSpaceMatrix", this->lightSpaceMatrixes[0]);
   } else if (this->mode == lightMode::POINT) {
-    shader->SetUniformValue("light.mode", 1);
-    shader->SetUniformValue("light.position", position);
-    shader->SetUniformValue("farPlane", 25.0f);
+    shader->SetUniformValue(lightName + ".position", position);
+    shader->SetUniformValue(lightName + ".farPlane", 25.0f);
   }
 }
 

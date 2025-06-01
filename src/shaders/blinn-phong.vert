@@ -6,7 +6,18 @@ layout (location = 2) in vec2 aTexCoord;
 out vec2 TexCoord;
 out vec3 Normal;
 out vec3 FragPos;
-// out vec4 FragPosLightSpace;
+out vec4 FragPosLightSpace;
+
+struct dirLight_t
+{
+  vec3 direction;
+  vec3 ambient;
+  vec3 diffuse;
+  vec3 specular;
+  mat4 lightSpaceMatrix;
+};
+
+uniform dirLight_t dirLight;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -21,5 +32,5 @@ void main()
   FragPos = vec3(model * vec4(aPos, 1.0));
   Normal = normalMatrix * aNormal;
 	TexCoord = aTexCoord;
-  // FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
+  FragPosLightSpace = dirLight.lightSpaceMatrix * vec4(FragPos, 1.0);
 }
