@@ -108,6 +108,5 @@ void main()
   lighting += PointLightCalculation(pointLight, norm, viewDir);
 
   vec4 result = vec4(lighting, 1.0) * ObjectColor;
-  // vec4 result = (ambient + diffuse + specular) * ObjectColor;
   FragColor = result;
 }
